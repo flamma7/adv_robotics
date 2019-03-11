@@ -21,3 +21,25 @@ class PololuController:
 		low = ord(self.con.read())
 		high = ord(self.con.read())
 		return (high << 8) + low
+
+        def setTarget(self, channels, values):
+                for i in range(channels):
+                        if not self.validChannel(channels[i]):
+                                raise(Exception('Not a valid channel.'))
+
+                        lowbyte = values[i] & 0xFF
+                        highbyte = values[i] >> 8
+                        cmd = self.pololuProtocol + chr(0x04) + chr(channels[i]) + chr(lowbyte) + chr(highbyte)
+                        self.con.write(bytes(cmd, 'latin-1'))
+                return
+                                      
+        def setMotors(self, msg, drive_channel, turn_channel):
+                #HARD CODED CHANNELS RIGHT NOW
+                turn_cmd = msg[0] * 20 + 6000
+                drive_cmd = msg[1] * 20 + 6000
+                cmd_vals = [turn_cmd, drive_cmd]
+                cmd_channels = [turn_channel, drive_channel]
+                self.setTarget(cmd_channels, cmd_vals)
+
+        def killMotors(self, msg):
+                
