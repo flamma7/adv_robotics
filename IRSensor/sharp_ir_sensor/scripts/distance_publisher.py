@@ -27,7 +27,7 @@ class PololuNode:
 
 
     def kill_callback(self,msg):
-        self.pololu.setMotors(msg, drive_channel, yaw_channel)
+        self.pololu.killMotors(msg, drive_channel, yaw_channel)
 
 
     def ir_callback(self,msg):
