@@ -10,9 +10,10 @@ YAW_INDEX = 1
 
 
 class PololuNode:
-    drive_channel = 0
-    yaw_channel = 1
-    ir_channel = 2
+    ir_channel = 0
+    drive_channel = 1
+    yaw_channel = 2
+
     def __init__(self, channel_map):
         
         self.pololu = PololuController()
