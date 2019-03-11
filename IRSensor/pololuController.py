@@ -42,4 +42,9 @@ class PololuController:
                 self.setTarget(cmd_channels, cmd_vals)
 
         def killMotors(self, msg):
+                turn_cmd = 6000
+                drive_cmd = 6000
+                cmd_vals = [turn_cmd, drive_cmd]
+                cmd_channels = [turn_channel, drive_channel]
+                self.setTarget(cmd_channels, cmd_vals)
                 
