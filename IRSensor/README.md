@@ -77,7 +77,7 @@ substitute y and x into the equation for a line
 
 (1/(R + K)) = mV + b
 
-Final equation used to estimate the range: R = (m/(V + b)) - k
+Final equation used to estimate the range: R = (1/(mV + b)) - k
 ```
 
 To see the plot of our sensors data look in the data dir `sensor_1_fig.png`.
