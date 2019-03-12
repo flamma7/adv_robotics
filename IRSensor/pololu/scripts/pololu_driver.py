@@ -4,20 +4,21 @@ import rospy
 from std_msgs.msg import Float64
 from std_msgs.msg import Empty
 from std_msgs.msg import Float64MultiArray
-from sharp_ir_sensor import PololuController
+from pololu import PololuController
 
 DRIVE_INDEX = 0
 YAW_INDEX = 1
 
-
 class PololuNode:
-    ir_channel = 0
-    drive_channel = 1
-    yaw_channel = 2
+    ir_channel0 = 0
+    ir_channel1 = 1
+    drive_channel = 2
+    yaw_channel = 3
 
     def __init__(self, channel_map):
         
-        self.pololu = PololuController()
+        self.pololu = PololuController(self.drive_channel, self.turn_channel, self.ir_channel0, self.ir_channel1)
+        
         self.ir_pub = rospy.Publisher('distance', Float64, queue_size=10)
         rospy.Subscriber('setpoints', Float64MultiArray, self.setpoint_callback)
         rospy.Subscriber('kill_motors', Empty, self.kill_callback)
@@ -25,7 +26,11 @@ class PololuNode:
         self.timer = rospy.Timer(rospy.Duration(1/20), self.ir_callback)
 
     def setpoint_callback(self, msg):
-        self.pololu.setMotors(msg, drive_channel, yaw_channel)
+        for data in msg.data:
+            if abs(data) > 100:
+                rospy.logerr("Invalid Command Input: " + str(data))
+                return
+        self.pololu.setMotors(msg.data)
 
 
     def kill_callback(self,msg):

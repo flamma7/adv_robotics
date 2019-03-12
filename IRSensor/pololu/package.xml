@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>sharp_ir_sensor</name>
+  <name>pololu</name>
   <version>0.0.0</version>
-  <description>The sharp_ir_sensor package is used to measure the distance between some object and the IR sensor. The specific model this package was created for is the Sharp GP2Y0A710YK0F Long Range IR Distance Sensor https://acroname.com/products/SHARP-GP2Y0A710YK0F-PACKAGE?sku=R316-GP2Y0A710YK.</description>
+  <description>The pololu package is used to measure the distance between some object and the IR sensor. The specific model this package was created for is the Sharp GP2Y0A710YK0F Long Range IR Distance Sensor https://acroname.com/products/SHARP-GP2Y0A710YK0F-PACKAGE?sku=R316-GP2Y0A710YK.</description>
 
   <maintainer email="baguirre1249@gmail.com">user</maintainer>>
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
