@@ -4,7 +4,7 @@ import rospy
 from std_msgs.msg import Float64
 from std_msgs.msg import Empty
 from std_msgs.msg import Int8MultiArray
-from pololu import PololuController
+from pololu import PololuController, WeightedAverage
 
 DRIVE_INDEX = 0
 YAW_INDEX = 1
@@ -14,6 +14,7 @@ class PololuNode:
     ir_channel1 = 5
     drive_channel = 1
     yaw_channel = 2
+    numTerms2AverageOver = 10
 
     def __init__(self):
 
@@ -25,6 +26,7 @@ class PololuNode:
 
         self.timer = rospy.Timer(rospy.Duration(2), self.ir_callback)
         rospy.loginfo("Pololu Driver Initialized.")
+        self.weightedAvg = WeightedAverage(self.numTerms2AverageOver)
 
     def setpoint_callback(self, msg):
         for data in msg.data:
@@ -51,7 +53,8 @@ class PololuNode:
         self.ir_pub.publish(distance)
         V2=self.pololu.getPosition(channel=self.ir_channel1)
         distance2 = (1/(m*V2+b)) - k
-        rospy.loginfo(distance2)
+        newAvgDist = self.weightedAvg.getNewAvg(distance2)
+        rospy.loginfo(newAvgDist)
         self.ir_pub.publish(distance2)
 
 
