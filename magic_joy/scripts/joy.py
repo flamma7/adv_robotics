@@ -3,7 +3,7 @@
 
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Empty
-from std_msgs.msg import Float64MultiArray
+from std_msgs.msg import Int8MultiArray
 import rospy
 
 DRIVE_PUB_INDEX = 0
@@ -18,7 +18,7 @@ class DualShock():
     def __init__(self):
         rospy.Subscriber('joy', Joy, self.callback)
         self.kill_pub = rospy.Publisher('kill_motors', Empty, queue_size=1)
-        self.setpoint_pub = rospy.Publisher('setpoints', Float64MultiArray, queue_size=1)
+        self.setpoint_pub = rospy.Publisher('setpoints', Int8MultiArray, queue_size=1)
 
     def callback(self, msg):
         buttons = msg.buttons
@@ -34,7 +34,7 @@ class DualShock():
             data = [];
             data.append(drive)
             data.append(yaw)
-            msg = Float64MultiArray(); msg.data = data
+            msg = Int8MultiArray(); msg.data = data
             self.setpoint_pub.publish(msg)
             
             if drive:
@@ -46,7 +46,7 @@ class DualShock():
         """
         Pololu driver expects yaw -100, 100
         """
-        return raw_yaw * 100
+        return int(raw_yaw * 100)
 
     def transform_drive(self, raw_drive):
         """
@@ -55,7 +55,7 @@ class DualShock():
         if raw_drive < 0:
             return 0
         else:
-            return raw_drive * 100
+            return int(raw_drive * 100)
         
 
 def main():

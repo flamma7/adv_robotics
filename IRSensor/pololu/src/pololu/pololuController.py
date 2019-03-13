@@ -21,8 +21,8 @@ class PololuController:
 		# https://www.pololu.com/docs/0J40/5.e Get Position section
 		if not self.validChannel(channel):
 			raise(Exception('Not a valid channel.'))
-		cmd = self.pololuProtocol + chr(0x10) + chr(channel)
-		self.con.write(bytes(cmd, 'latin-1'))
+		cmd = bytearray(self.pololuProtocol + [chr(0x10), chr(channel)])
+		self.con.write(cmd)
 		low = ord(self.con.read())
 		high = ord(self.con.read())
 		return (high << 8) + low
@@ -39,19 +39,24 @@ class PololuController:
                 for i in range(len(channel_list)):
                         if not self.validChannel(channel_list[i]):
                                 raise(Exception('Not a valid channel.'))
-
+                        
+                        print "at setTarget: ", value_list[i]
                         lowbyte = value_list[i] & 0x7F
-                        highbyte = value_list[i] >> 7
+                        print hex(lowbyte)
+                        highbyte = (value_list[i] >> 7) & 0x7F
+                        print hex(highbyte)
                         cmd_list = self.pololuProtocol + [0x04, channel_list[i], lowbyte, highbyte]
                         cmd = bytearray(cmd_list)
                         self.con.write(cmd)
                                       
         def setMotors(self, cmd_list):
                 #HARD CODED CHANNELS RIGHT NOW
-                turn_cmd = cmd_list[YAW_INDEX] * 20 + 6000
-                drive_cmd = cmd_list[DRIVE_INDEX] * 20 + 6000
-                cmd_vals = [turn_cmd, drive_cmd]
-                cmd_channels = [self.turn_channel, self.drive_channel]
+                print "at setMotors: ", cmd_list
+                turn_cmd = int(cmd_list[YAW_INDEX]) * 20 + 6000
+                drive_cmd = int(cmd_list[DRIVE_INDEX]) * 20 + 6000
+                print "Transformed Drive: ", drive_cmd
+                cmd_vals = [drive_cmd] #turn_cmd
+                cmd_channels = [self.drive_channel]
                 self.setTarget(cmd_channels, cmd_vals)
 
         def killMotors(self, msg, drive_channel, turn_channel):
