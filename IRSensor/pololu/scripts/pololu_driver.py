@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from __future__ import division
 import rospy
 from std_msgs.msg import Float64
 from std_msgs.msg import Empty
@@ -10,21 +10,22 @@ DRIVE_INDEX = 0
 YAW_INDEX = 1
 
 class PololuNode:
-    ir_channel0 = 0
-    ir_channel1 = 5
+    ir_channel_front = 0
+    ir_channel_back = 5
     drive_channel = 1
     yaw_channel = 2
     numTerms2AverageOver = 10
 
     def __init__(self):
 
-        self.pololu = PololuController(self.drive_channel, self.yaw_channel, self.ir_channel0, self.ir_channel1)
+        self.pololu = PololuController(self.drive_channel, self.yaw_channel, self.ir_channel_front, self.ir_channel_back)
         
         self.ir_pub = rospy.Publisher('distance', Float64, queue_size=10)
         rospy.Subscriber('move_setpoints', Int8MultiArray, self.setpoint_callback)
         rospy.Subscriber('kill_motors', Empty, self.kill_callback)
 
-        self.timer = rospy.Timer(rospy.Duration(2), self.ir_callback)
+        ir_read_freq = 1 / 50
+        self.timer = rospy.Timer(rospy.Duration(ir_read_freq), self.ir_callback)
         rospy.loginfo("Pololu Driver Initialized.")
         self.weightedAvg = WeightedAverage(self.numTerms2AverageOver)
 
@@ -37,21 +38,21 @@ class PololuNode:
 
 
     def kill_callback(self,msg):
-        self.pololu.killMotors(msg, drive_channel, yaw_channel)
+        self.pololu.killMotors()
         rospy.signal_shutdown('Motors Killed')
 
 
     def ir_callback(self,msg):
 
-        V = self.pololu.getPosition(channel=self.ir_channel0)
+        V = self.pololu.getPosition(channel=self.ir_channel_front)
         m = 0.0008073863884277423
         b = -0.20900036625160207
         k = 0.43
         distance = (1/(m*V + b)) - k
         #distance = V
-        rospy.loginfo(distance)
-        self.ir_pub.publish(distance)
-        V2=self.pololu.getPosition(channel=self.ir_channel1)
+        # rospy.loginfo(distance)
+        # self.ir_pub.publish(distance)
+        V2=self.pololu.getPosition(channel=self.ir_channel_back)
         distance2 = (1/(m*V2+b)) - k
         newAvgDist = self.weightedAvg.getNewAvg(distance2)
         rospy.loginfo(newAvgDist)
@@ -61,7 +62,6 @@ class PololuNode:
 def main():
     rospy.init_node('pololu_node')
     pol = PololuNode()
-
     rospy.spin()
     
 
