@@ -18,7 +18,7 @@ class DualShock():
     def __init__(self):
         rospy.Subscriber('joy', Joy, self.callback)
         self.kill_pub = rospy.Publisher('kill_motors', Empty, queue_size=1)
-        self.setpoint_pub = rospy.Publisher('setpoints', Int8MultiArray, queue_size=1)
+        self.setpoint_pub = rospy.Publisher('move_setpoints', Int8MultiArray, queue_size=5)
 
     def callback(self, msg):
         buttons = msg.buttons

@@ -21,7 +21,7 @@ class PololuNode:
         self.pololu = PololuController(self.drive_channel, self.yaw_channel, self.ir_channel0, self.ir_channel1)
         
         self.ir_pub = rospy.Publisher('distance', Float64, queue_size=10)
-        rospy.Subscriber('setpoints', Int8MultiArray, self.setpoint_callback)
+        rospy.Subscriber('move_setpoints', Int8MultiArray, self.setpoint_callback)
         rospy.Subscriber('kill_motors', Empty, self.kill_callback)
 
         self.timer = rospy.Timer(rospy.Duration(2), self.ir_callback)
