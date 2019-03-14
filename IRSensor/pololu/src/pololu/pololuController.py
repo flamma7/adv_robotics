@@ -50,8 +50,8 @@ class PololuController:
                 #HARD CODED CHANNELS RIGHT NOW
                 turn_cmd = int(cmd_list[YAW_INDEX]) * 20 + 6000
                 drive_cmd = int(cmd_list[DRIVE_INDEX]) * 20 + 6000
-                cmd_vals = [drive_cmd] #turn_cmd
-                cmd_channels = [self.drive_channel]
+                cmd_vals = [turn_cmd, drive_cmd] #turn_cmd
+                cmd_channels = [self.turn_channel, self.drive_channel]
                 self.setTarget(cmd_channels, cmd_vals)
 
         def killMotors(self):

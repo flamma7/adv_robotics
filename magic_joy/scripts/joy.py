@@ -46,7 +46,7 @@ class DualShock():
         """
         Pololu driver expects yaw -100, 100
         """
-        return int(raw_yaw * 100)
+        return -int(raw_yaw * 100)
 
     def transform_drive(self, raw_drive):
         """
