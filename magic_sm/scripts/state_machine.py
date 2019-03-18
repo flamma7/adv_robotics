@@ -8,7 +8,7 @@ class StateMachine:
     def __init__(self):
         rospy.loginfo("State Machine Initializing")
         self.drivePub = rospy.Publisher("drive/control_effort", Float64, queue_size=10)
-        self.drive_effort = 10
+        self.drive_effort = 15
         self.timer = rospy.Timer(rospy.Duration(0.1), self.drive_callback)
 
     def drive_callback(self, msg):
