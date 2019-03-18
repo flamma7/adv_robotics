@@ -13,7 +13,7 @@ def main():
     rate = rospy.Rate(30)
 
     msg = Float64()
-    msg.data = 3.0
+    msg.data = 5.0
 
     while not rospy.is_shutdown():
         pub.publish(msg)

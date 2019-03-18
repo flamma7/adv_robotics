@@ -19,7 +19,7 @@ class PololuNode:
     def __init__(self):
 
         self.pololu = PololuController(self.drive_channel, self.yaw_channel, self.ir_channel_front, self.ir_channel_back)
-        
+
         self.ir_pub = rospy.Publisher('distance', Float64, queue_size=10)
         self.front_ir_pub = rospy.Publisher('front_distance', Float64, queue_size=10)
         rospy.Subscriber('move_setpoints', Int8MultiArray, self.setpoint_callback)
@@ -50,7 +50,7 @@ class PololuNode:
 
 
     def ir_callback(self,msg):
-
+        # logistic regression
         V = self.pololu.getPosition(channel=self.ir_channel_front)
         m = 0.0008073863884277423
         b = -0.20900036625160207
@@ -73,7 +73,7 @@ def main():
     rospy.init_node('pololu_node')
     pol = PololuNode()
     rospy.spin()
-    
+
 
 if __name__ == '__main__':
     try:
