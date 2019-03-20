@@ -48,6 +48,11 @@ class PololuNode:
         self.pololu.killMotors()
         rospy.signal_shutdown('Motors Killed')
 
+    def validate_distance(d):
+        if d < 0 or d > 18:
+            return 18
+        else:
+            return d
 
     def ir_callback(self,msg):
         # logistic regression
@@ -58,7 +63,7 @@ class PololuNode:
         distance = (1/(m*V + b)) - k
         #distance = V
         # rospy.loginfo(distance)
-        self.front_ir_pub.publish(distance)
+        self.front_ir_pub.publish(validate_distance(distance))
         V2=self.pololu.getPosition(channel=self.ir_channel_back)
         msg = Int16
         msg.data = V2
