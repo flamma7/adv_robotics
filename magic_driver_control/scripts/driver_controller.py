@@ -52,8 +52,8 @@ class DriverControl:
         Sends a command to the pololu
         """
         yaw = self.yaw
-        if abs(self.yaw) > 20 and self.front_distance > 10: # doorway case with high front dist
-            yaw = 0
+        # if abs(self.yaw) > 60 and self.front_distance > 10: # doorway case with high front dist
+        #     yaw = 0
 
         #if self.front_distance < 7:
         #    yaw = -100 + (yaw 

@@ -20,13 +20,13 @@
 <node name="setpoint_gen" pkg="magic_pid" type="setpoint_gen.py" output="screen" />
 
 
-<node name="servo_sim_node" pkg="pid" type="plant_sim" ns="right_wheel" output="screen" >
+<!-- <node name="servo_sim_node" pkg="pid" type="plant_sim" ns="right_wheel" output="screen" >
   <param name="plant_order" value="2" />
   <param name="reverse_acting" value="true" />
 </node> -->
 
 
-<node name="rqt_plot" pkg="rqt_plot" type="rqt_plot"
-args="control_effort/data /distance setpoint/data" />
+<!-- <node name="rqt_plot" pkg="rqt_plot" type="rqt_plot"
+args="control_effort/data /distance setpoint/data" /> -->
 </group>
 </launch>
