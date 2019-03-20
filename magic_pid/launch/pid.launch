@@ -25,7 +25,7 @@
   <param name="reverse_acting" value="true" />
 </node> -->
 
-r
+
 <node name="rqt_plot" pkg="rqt_plot" type="rqt_plot"
 args="control_effort/data /distance setpoint/data" />
 </group>
