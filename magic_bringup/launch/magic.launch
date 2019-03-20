@@ -2,6 +2,14 @@
 
 <node name="pololu_driver" pkg="pololu" type="pololu_driver.py" />
 
+<include file="$(find magic_pid)/launch/pid.launch" />
+
+<node name="driver_controller" pkg="magic_driver_control" type="driver_controller.py" output="screen" />
+
+<node name="state_machine" pkg="magic_sm" type="state_machine.py" output="screen" />
+
+<node name="joy" pkg="magic_joy" type="joy.py" output="screen" />
+
 
 
 </launch>
