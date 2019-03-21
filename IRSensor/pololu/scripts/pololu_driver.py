@@ -65,8 +65,12 @@ class PololuNode:
         distance = (1/(m*V + b)) - k
         #distance = V
         # rospy.loginfo(distance)
+<<<<<<< HEAD
         newFrontAvg = self.frontWeightedAvg.getNewAvg(self.validate_distance(distance))
         self.front_ir_pub.publish(newFrontAvg)
+=======
+        self.front_ir_pub.publish(validate_distance(distance))
+>>>>>>> 2080e9f526e4d320d013d0bb8eef203bf9e93d4a
         V2=self.pololu.getPosition(channel=self.ir_channel_back)
 #        rospy.loginfo(V2)
         msg = Int16()
