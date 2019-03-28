@@ -1,0 +1,8 @@
+<launch>
+
+<rosparam command="load" file="$(find magic_sm)/config/magic.yaml" />
+
+
+<node name="magic_sm" pkg="magic_sm" type="state_machine.py" output="screen" />
+
+</launch>
