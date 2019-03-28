@@ -3,7 +3,7 @@ from __future__ import division
 import rospy
 from std_msgs.msg import Float64
 from std_msgs.msg import Empty
-from std_msgs.msg import Int8MultiArray, Int16
+from std_msgs.msg import Int8MultiArray, Int16, Empty
 from pololu import PololuController, WeightedAverage
 
 DRIVE_INDEX = 0
@@ -19,6 +19,7 @@ class PololuNode:
     def __init__(self):
 
         self.pololu = PololuController(self.drive_channel, self.yaw_channel, self.ir_channel_front, self.ir_channel_back)
+        self.pololu.killMotors()
 
         self.ir_pub = rospy.Publisher('distance', Float64, queue_size=10)
         self.front_ir_pub = rospy.Publisher('front_distance', Float64, queue_size=10)
@@ -49,6 +50,7 @@ class PololuNode:
         self.pololu.killMotors()
         rospy.signal_shutdown('Motors Killed')
 
+        
     def validate_distance(self, d):
         max_dist = 30
         if d < 0 or d > max_dist:

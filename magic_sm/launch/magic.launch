@@ -5,4 +5,23 @@
 
 <node name="magic_sm" pkg="magic_sm" type="state_machine.py" output="screen" />
 
+<node name="controller" pkg="pid" type="controller" output="screen" >
+  <param name="node_name" value="ir_wall_pid" />
+  <param name="Kp" value="40.0" />
+  <param name="Ki" value="0" />
+  <param name="Kd" value="10" />
+  <param name="upper_limit" value="100" />
+  <param name="lower_limit" value="-100" />
+  <param name="windup_limit" value="10" />
+  <param name="max_loop_frequency" value="100.0" />
+  <param name="min_loop_frequency" value="100.0" />
+  <param name="topic_from_plant" value="/pid/yaw"/>
+  <param name="topic_from_controller" value="doorway_control_effort"/>
+  <param name="setpoint_name" value="setpoint" />
+  <!-- <remap from="state" to="/distance" /> -->
+ </node>
+
+
+
+
 </launch>

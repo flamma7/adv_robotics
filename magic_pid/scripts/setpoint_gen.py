@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Publishes the setpoint at a regular rate
-Default 3m
+Default 3 feet
 """
 import rospy
 from std_msgs.msg import Float64
