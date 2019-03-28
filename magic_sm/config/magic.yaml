@@ -3,3 +3,12 @@
 
 sm:
   update_hz: 50
+
+straight:
+  drive: 10
+
+doorway:
+  drive: 10
+
+corner:
+  drive: 10

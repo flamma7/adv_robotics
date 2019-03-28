@@ -13,8 +13,8 @@ class Doorway(Magic_State):
 
     CONST_DRIVE = 10
     
-    def __init__(self):
-        super(Doorway, self).__init__(self.outcomes)
+    def __init__(self, update_rate):
+        super(Doorway, self).__init__(update_rate, self.outcomes)
         rospy.Subscriber('/imu/data/', Imu, self.imu_data_callback)
         rospy.Subscriber('doorway_control_effort', Float64, self.doorway_pid_callback)
         self.yawPub = rospy.Publisher('/imu/yaw', Float64, queue_size=1)
