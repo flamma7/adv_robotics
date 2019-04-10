@@ -1,0 +1,11 @@
+# Magic SM config
+
+
+sm:
+  update_hz: 50
+
+straight:
+  drive: 30
+
+skid:
+  drive: 30
