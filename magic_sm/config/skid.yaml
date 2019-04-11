@@ -1,5 +1,6 @@
 # Magic SM config
 
+wall_setpoint: 3
 
 sm:
   update_hz: 50

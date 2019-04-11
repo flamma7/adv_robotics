@@ -10,15 +10,19 @@ class Straight(Magic_State):
     outcomes = ['completed', 'skid']
     is_skid = 0
     is_kill = 0
-    def __init__(self, update_rate, drive):
+    def __init__(self, update_rate, drive, wall_setpoint):
         super(Straight, self).__init__(update_rate, self.outcomes)
         self.drive_setting = drive
         self.yaw = 0
+        self.wall_msg = Float64()
+        self.wall_msg.data = wal.l_setpoint
+        self.wall_pub = rospy.Publisher('yaw/setpoint', Float64, queue_size=10)
         rospy.Subscriber('yaw/control_effort', Float64, self.yaw_ce_callback)
         rospy.Subscriber('/is_kill', Empty, self.set_kill)
         rospy.Subscriber('/is_skid', Empty, self.set_skid)
 
     def execute(self, userdata):
+        rospy.logwarn("Executing Straight")
         rate = rospy.Rate(1 / self.update_rate)
         while not rospy.is_shutdown():
             if self.skid_check():
@@ -27,6 +31,7 @@ class Straight(Magic_State):
             elif self.kill_check():
                 self.publish_cmd(0,0)
                 return 'completed'
+            self.wall_pub.publish(self.wall_msg)
             self.publish_cmd(self.drive_setting, self.yaw)
             rate.sleep()
         return 'completed'
@@ -59,6 +64,7 @@ class Skid(Magic_State):
         rospy.Subscriber('/is_straight', Empty, self.set_straight)
         
     def execute(self, userdata):
+        rospy.logwarn("Executing Skid")
         rate = rospy.Rate(1 / self.update_rate)
         while not rospy.is_shutdown():
             if self.straight_check():
