@@ -25,6 +25,7 @@ class PololuNode:
         self.front_ir_pub = rospy.Publisher('front_distance', Float64, queue_size=10)
         rospy.Subscriber('move_setpoints', Int8MultiArray, self.setpoint_callback)
         rospy.Subscriber('kill_motors', Empty, self.kill_callback)
+        rospy.Subscriber('revive_motors', Empty, self.revive_callback)
         self.raw_ir_pub = rospy.Publisher('raw_ir', Int16, queue_size=10)
 
         ir_read_freq = 1 / 50
@@ -32,10 +33,11 @@ class PololuNode:
         rospy.loginfo("Pololu Driver Initialized.")
         self.sideWeightedAvg = WeightedAverage(self.numTerms2AverageOver)
         self.frontWeightedAvg = WeightedAverage(2*self.numTerms2AverageOver)
-        self.killed = False
+        self.killed = True
 
     def setpoint_callback(self, msg):
         if self.killed:
+            self.pololu.killMotors()
             return
         
         for data in msg.data:
@@ -44,11 +46,15 @@ class PololuNode:
                 return
         self.pololu.setMotors(msg.data)
 
+    def revive_callback(self, msg):
+        self.killed = False
+        rospy.logwarn("Reviving")
 
     def kill_callback(self,msg):
         self.killed = True
         self.pololu.killMotors()
-        rospy.signal_shutdown('Motors Killed')
+        rospy.logwarn("Killed")
+#        rospy.signal_shutdown('Motors Killed')
 
         
     def validate_distance(self, d):

@@ -1,11 +1,16 @@
 <launch>
 
+<arg name="speed" default="8"	/>
 <rosparam command="load" file="$(find magic_sm)/config/skid.yaml" />
 
 
-<node name="magic_sm" pkg="magic_sm" type="skid_test_sm.py" output="screen" />
+<node name="magic_sm" pkg="magic_sm" type="skid_test_sm.py" output="screen" >
+      <param name="straight/drive" value="$(arg speed)" />
+</node>
 
-<include file="$(find magic_pid)/launch/pid.launch" />
+<include file="$(find magic_pid)/launch/pid.launch" >
+	 <arg name="speed" value="$(arg speed)"	/> 
+</include>
 
 
 

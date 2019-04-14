@@ -13,8 +13,10 @@ KILL_INDEX_R1 = 5
 DRIVE_INDEX = 1
 YAW_INDEX = 3
 
-SKID_INDEX = 6      #FIXME
-STRAIGHT_INDEX = 7  #FIXME
+SKID_INDEX = 0    
+STRAIGHT_INDEX = 2
+
+REVIVE_INDEX = 1
 
 class DualShock():
 
@@ -24,6 +26,7 @@ class DualShock():
         self.skid_kill_pub = rospy.Publisher('/is_kill', Empty, queue_size=1)
         self.skid_straight_pub = rospy.Publisher('/is_straight',Empty,queue_size=1)
         self.skid_skid_pub = rospy.Publisher('/is_skid',Empty, queue_size=1)
+        self.revive_pub = rospy.Publisher('/revive_motors', Empty, queue_size=1)
         self.setpoint_pub = rospy.Publisher('move_setpoints', Int8MultiArray, queue_size=5)
         self.motor_control = True
 
@@ -33,11 +36,15 @@ class DualShock():
             rospy.logwarn("Killed")
             self.kill_pub.publish(Empty())
         elif buttons[SKID_INDEX]:
-            rospy.log("Skidding")
+            rospy.logwarn("Skidding")
             self.skid_skid_pub.publish(Empty())
         elif buttons[STRAIGHT_INDEX]:
-            rospy.log("Straighting")
+            rospy.logwarn("Straighting")
             self.skid_straight_pub.publish(Empty())
+
+        elif buttons[REVIVE_INDEX]:
+            rospy.logwarn("Reviving")
+            self.revive_pub.publish(Empty())
     
         elif self.motor_control:
             raw_drive = msg.axes[DRIVE_INDEX]

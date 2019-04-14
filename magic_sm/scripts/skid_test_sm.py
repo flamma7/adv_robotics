@@ -15,15 +15,16 @@ class Straight(Magic_State):
         self.drive_setting = drive
         self.yaw = 0
         self.wall_msg = Float64()
-        self.wall_msg.data = wal.l_setpoint
+        self.wall_msg.data = wall_setpoint
         self.wall_pub = rospy.Publisher('yaw/setpoint', Float64, queue_size=10)
         rospy.Subscriber('yaw/control_effort', Float64, self.yaw_ce_callback)
         rospy.Subscriber('/is_kill', Empty, self.set_kill)
         rospy.Subscriber('/is_skid', Empty, self.set_skid)
 
     def execute(self, userdata):
+        self.is_skid = False
         rospy.logwarn("Executing Straight")
-        rate = rospy.Rate(1 / self.update_rate)
+        rate = rospy.Rate(self.update_rate)
         while not rospy.is_shutdown():
             if self.skid_check():
                 self.is_skid = 0
@@ -32,6 +33,7 @@ class Straight(Magic_State):
                 self.publish_cmd(0,0)
                 return 'completed'
             self.wall_pub.publish(self.wall_msg)
+#            rospy.loginfo("Sending command:"+ str(self.drive_setting)+"+"+str(self.yaw))
             self.publish_cmd(self.drive_setting, self.yaw)
             rate.sleep()
         return 'completed'
@@ -64,8 +66,9 @@ class Skid(Magic_State):
         rospy.Subscriber('/is_straight', Empty, self.set_straight)
         
     def execute(self, userdata):
+        self.is_straight = False
         rospy.logwarn("Executing Skid")
-        rate = rospy.Rate(1 / self.update_rate)
+        rate = rospy.Rate(self.update_rate)
         while not rospy.is_shutdown():
             if self.straight_check():
                 self.is_straight = 0
@@ -96,12 +99,13 @@ while not rospy.has_param('sm/update_hz') and not rospy.is_shutdown():
     pass
 
 update_rate = float(rospy.get_param('sm/update_hz'))
-drive_set = int(rospy.get_param('straight/drive'))
+drive_set = int(rospy.get_param('~straight/drive'))
+wall_setpoint = float(rospy.get_param('wall_setpoint'))
 
 # load rosparams
 with sm_top:
     
-    smach.StateMachine.add('Straight', Straight(update_rate,drive_set), transitions={'completed':'sm_completed', 'skid' :'Skid'})
+    smach.StateMachine.add('Straight', Straight(update_rate,drive_set, wall_setpoint), transitions={'completed':'sm_completed', 'skid' :'Skid'})
     smach.StateMachine.add('Skid', Skid(update_rate,drive_set), transitions={'completed':'sm_completed', 'straight':'Straight'})
 
     

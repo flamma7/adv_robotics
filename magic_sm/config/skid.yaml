@@ -1,12 +1,12 @@
 # Magic SM config
 
-wall_setpoint: 3
+wall_setpoint: 8
 
 sm:
   update_hz: 50
 
 straight:
-  drive: 30
+  drive: 40
 
 skid:
-  drive: 30
+  drive: 10
