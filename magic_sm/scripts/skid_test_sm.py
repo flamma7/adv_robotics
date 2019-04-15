@@ -17,7 +17,7 @@ class Straight(Magic_State):
         self.wall_msg = Float64()
         self.wall_msg.data = wall_setpoint
         self.wall_pub = rospy.Publisher('yaw/setpoint', Float64, queue_size=10)
-        rospy.Subscriber('yaw/control_effort', Float64, self.yaw_ce_callback)
+        rospy.Subscriber('hall/control_effort', Float64, self.yaw_ce_callback)
         rospy.Subscriber('/is_kill', Empty, self.set_kill)
         rospy.Subscriber('/is_skid', Empty, self.set_skid)
 
@@ -99,14 +99,15 @@ while not rospy.has_param('sm/update_hz') and not rospy.is_shutdown():
     pass
 
 update_rate = float(rospy.get_param('sm/update_hz'))
-drive_set = int(rospy.get_param('~straight/drive'))
+hdrive_set = int(rospy.get_param('~hdrive'))
 wall_setpoint = float(rospy.get_param('wall_setpoint'))
+cdrive_set = int(rospy.get_param('~cdrive'))
 
 # load rosparams
 with sm_top:
     
-    smach.StateMachine.add('Straight', Straight(update_rate,drive_set, wall_setpoint), transitions={'completed':'sm_completed', 'skid' :'Skid'})
-    smach.StateMachine.add('Skid', Skid(update_rate,drive_set), transitions={'completed':'sm_completed', 'straight':'Straight'})
+    smach.StateMachine.add('Straight', Straight(update_rate,hdrive_set, wall_setpoint), transitions={'completed':'sm_completed', 'skid' :'Skid'})
+    smach.StateMachine.add('Skid', Skid(update_rate,hdrive_set), transitions={'completed':'sm_completed', 'straight':'Straight'})
 
     
 try:

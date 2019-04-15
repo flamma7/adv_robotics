@@ -1,14 +1,10 @@
 # Magic SM config
 
+wall_setpoint: 8
 
 sm:
   update_hz: 50
 
-straight:
-  drive: 10
-
-doorway:
-  drive: 10
-
-corner:
-  drive: 10
+ir:
+  side_thresh: 10
+  front_thresh: 21

@@ -7,10 +7,13 @@ from std_msgs.msg import Float64
 
 class Straight(Magic_State):
     outcomes = ['completed', 'doorway', 'corner']
-    def __init__(self, update_rate):
+    def __init__(self, update_rate,drive,wall_setpoint):
         super(Straight, self).__init__(update_rate, self.outcomes)
-        self.drive = rospy.get_param('straight/drive')
-        rospy.Subscriber('yaw/control_effort', Float64, self.yaw_control_effort_callback)
+        self.drive = drive
+        self.ir_setpt_msg = Float64()
+        self.ir_setpt_msg.data = wall_setpoint
+        self.ir_pid_pub = rospy.Publisher('hall/setpoint', Float64, queue_size=10)
+        rospy.Subscriber('hall/control_effort', Float64, self.yaw_control_effort_callback)
         self.yaw_ce = 0
 
     def execute(self, userdata):
@@ -22,6 +25,7 @@ class Straight(Magic_State):
             elif self.doorway_check():
                 return "doorway"
             self.publish_cmd(self.drive, self.yaw_ce)
+            self.ir_pid_pub.publish(self.ir_setpt_msg)
             rate.sleep()
         return "completed"
 

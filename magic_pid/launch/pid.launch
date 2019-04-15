@@ -1,10 +1,9 @@
 <launch>
-  <arg name="speed" default="8" />
+  <arg name="hdrive" default="8" />
   
-  <group ns='yaw' >
 
-<node name="controller" pkg="pid" type="controller" output="screen" >
-  <rosparam command="load" file="$(find magic_pid)/conf/speed_$(arg speed).yaml" />
+<node ns="hall" name="hall_yaw_controller" pkg="pid" type="controller" output="screen" >
+  <rosparam command="load" file="$(find magic_pid)/conf/ir_$(arg hdrive).yaml" />
   <param name="node_name" value="ir_wall_pid" />
   <param name="upper_limit" value="100" />
   <param name="lower_limit" value="-100" />
@@ -15,5 +14,19 @@
   <param name="setpoint_name" value="setpoint" />
   <!-- <remap from="state" to="/distance" /> -->
  </node>
-</group>
+
+
+<node ns="door" name="door_yaw_controller" pkg="pid" type="controller" output="screen" >
+  <rosparam command="load" file="$(find magic_pid)/conf/imu_$(arg hdrive).yaml" />
+  <param name="node_name" value="ir_wall_pid" />
+  <param name="upper_limit" value="100" />
+  <param name="lower_limit" value="-100" />
+  <param name="max_loop_frequency" value="100.0" />
+  <param name="min_loop_frequency" value="100.0" />
+  <!--param name="topic_from_plant" value="/distance"/>
+  <param name="topic_from_controller" value="control_effort"/> 
+  <param name="setpoint_name" value="setpoint" /> -->
+  <!-- <remap from="state" to="/distance" /> -->
+ </node>
+ 
 </launch>
