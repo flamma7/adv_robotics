@@ -38,8 +38,8 @@
     args="load imu_filter_madgwick/ImuFilterNodelet imu_manager" 
     output="screen">
 
-    <param name="use_mag" value="true"/>
-    <param name="use_magnetic_field_msg" value="true"/>
+    <param name="use_mag" value="false"/>
+    <param name="use_magnetic_field_msg" value="false"/>
   </node>
 
 </launch>

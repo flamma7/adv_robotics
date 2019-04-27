@@ -1,10 +1,10 @@
 # Magic SM config
 
-wall_setpoint: 8
+wall_setpoint: 9
 
 sm:
   update_hz: 50
 
 ir:
-  side_thresh: 10
-  front_thresh: 21
+  side_thresh: 25
+  front_thresh: 20.5
