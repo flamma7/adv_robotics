@@ -25,6 +25,7 @@ class Doorway(Magic_State):
         
         #self.doorCtl = rospy.Publisher('')
         self.drive = drive
+#        self.drive = -100
 
     def imu_data_callback(self, msg):
         quat = [msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w]
@@ -46,12 +47,15 @@ class Doorway(Magic_State):
 
     def door_ce_callback(self, msg):
         #msg.data should be a yaw value between -100 and 100
-        self.yaw_ce = msg.data
+        self.yaw_ce = - msg.data
         
         
     def execute(self, userdata):
-        rospy.sleep(.3)
+        rate = rospy.Rate(self.update_rate)
+        while not rospy.is_shutdown() and self.doorway_check():
+            rate.sleep()
         return 'end_doorway'
+    
         rate = rospy.Rate(self.update_rate)
         
         rospy.loginfo("Waiting for yaw")

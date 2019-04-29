@@ -1,0 +1,6 @@
+<launch>
+
+<rosparam command="load" file="$(find magic_sm)/config/magic.yaml" />
+<node name="detector" pkg="magic_sm" type="detector.py" output="screen" />
+
+</launch>
