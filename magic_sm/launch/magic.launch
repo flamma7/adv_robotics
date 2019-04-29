@@ -1,21 +1,14 @@
 <launch>
 
-<arg name="hdrive" default="8"  />
-<arg name="cdrive" default="$(arg hdrive)" />
-
 <rosparam command="load" file="$(find magic_sm)/config/magic.yaml" />
 
+<node name="magic_sm" pkg="magic_sm" type="state_machine.py" output="screen" />
 
-<node name="magic_sm" pkg="magic_sm" type="skid_test_sm.py" output="screen" >
-      <param name="hdrive" value="$(arg hdrive)" />
-      <param name="cdrive" value="$(arg cdrive)" />
-</node>
-
-<include file="$(find magic_pid)/launch/pid.launch" >
+<!-- <include file="$(find magic_pid)/launch/pid.launch" >
 	 <arg name="hdrive" value="$(arg hdrive)"	/> 
 </include>
 
-<include file="$(find magic_imu)/launch/magic_imu.launch" />
+<include file="$(find magic_imu)/launch/magic_imu.launch" /> -->
 
 
 </launch>

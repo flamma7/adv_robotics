@@ -1,10 +1,13 @@
 # Magic SM config
 
-wall_setpoint: 8
+dist: 0.0                   # Not used but should be true input
+jump_angle: 30              # Angle of the jump
+landing_speed: 30           # Speed at which to go upon landing
+landing_time: 0.5           # Time to drive on landing
+imu_thresh: 1.0             # Acceleration threshold to determine if landing or taking off
+
+# For hardcoding purposes only
+drive: 30                   # Takeoff speed
 
 sm:
   update_hz: 50
-
-ir:
-  side_thresh: 10
-  front_thresh: 21
