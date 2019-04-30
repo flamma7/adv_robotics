@@ -23,7 +23,7 @@ class Runway(Magic_State):
         rospy.Subscriber("revive_motors",Empty, self.revive_callback)
         self.revive = False
         rampup_time = float(rospy.get_param('rampup_time'))
-        self.rampup_increment = rampup_time / self.drive
+        self.rampup_increment = self.drive / (rampup_time * self.update_rate)
 
     def calculate_drive(self, distance, jump_angle):
         # TODO actually calculate the required drive
@@ -33,11 +33,13 @@ class Runway(Magic_State):
         rate = rospy.Rate(self.update_rate)
         while not self.revive and not rospy.is_shutdown():
             rate.sleep()
-        drive = self.rampup_increment
+        drive = 10
         while not rospy.is_shutdown() and not self.airborne:
             self.publish_cmd(drive, self.yaw)
             if drive < self.drive:
                 drive += self.rampup_increment
+            elif drive > self.drive:
+                drive = self.drive
             rate.sleep()
         return "airborne"
 

@@ -25,7 +25,7 @@ class Airborne(Magic_State):
         rospy.loginfo("airborne")
         self.landing = False
         rate = rospy.Rate(self.update_rate)
-        back_rot = 40
+        back_rot = 70
         self.publish_cmd(back_rot,0)
 #        self.publish_cmd(0,0)
         while not rospy.is_shutdown() and not self.landing:
