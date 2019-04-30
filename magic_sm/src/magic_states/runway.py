@@ -22,7 +22,7 @@ class Runway(Magic_State):
         self.pubz = rospy.Publisher("raw_z", Float64, queue_size=10)
 
         rampup_time = float(rospy.get_param('rampup_time'))
-        self.rampup_increment = self.drive / rampup_time
+        self.rampup_increment = rampup_time / self.drive
 
     def calculate_drive(self, distance, jump_angle):
         # TODO actually calculate the required drive
