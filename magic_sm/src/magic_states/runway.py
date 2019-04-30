@@ -4,7 +4,7 @@ import smach
 import rospy
 from magic_states.magic_state import Magic_State
 from sensor_msgs.msg import Imu
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Empty
 
 class Runway(Magic_State):
     outcomes = ['airborne']
@@ -20,7 +20,8 @@ class Runway(Magic_State):
         self.beta = (1.0 - float(num_terms_to_avg)) / (- float(num_terms_to_avg))
         self.pub = rospy.Publisher("running_avg", Float64, queue_size=10)
         self.pubz = rospy.Publisher("raw_z", Float64, queue_size=10)
-
+        rospy.Subscriber("revive_motors",Empty, self.revive_callback)
+        self.revive = False
         rampup_time = float(rospy.get_param('rampup_time'))
         self.rampup_increment = rampup_time / self.drive
 
@@ -30,6 +31,8 @@ class Runway(Magic_State):
 
     def execute(self, userdata):
         rate = rospy.Rate(self.update_rate)
+        while not self.revive and not rospy.is_shutdown():
+            rate.sleep()
         drive = self.rampup_increment
         while not rospy.is_shutdown() and not self.airborne:
             self.publish_cmd(drive, self.yaw)
@@ -50,3 +53,7 @@ class Runway(Magic_State):
             
         if abs(self.accel_z) < self.imu_thresh:
             self.airborne = True
+
+
+    def revive_callback(self,msg):
+        self.revive = True
