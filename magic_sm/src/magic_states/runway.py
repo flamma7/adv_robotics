@@ -4,6 +4,7 @@ import smach
 import rospy
 from magic_states.magic_state import Magic_State
 from sensor_msgs.msg import Imu
+from std_msgs.msg import Float64
 
 class Runway(Magic_State):
     outcomes = ['airborne']
@@ -15,8 +16,13 @@ class Runway(Magic_State):
         rospy.Subscriber('/imu/data/', Imu, self.imu_callback)
         self.imu_thresh = float(rospy.get_param('imu_thresh'))
         self.accel_z = None
-        num_terms_to_avg = 50
+        num_terms_to_avg = 20
         self.beta = (1.0 - float(num_terms_to_avg)) / (- float(num_terms_to_avg))
+        self.pub = rospy.Publisher("running_avg", Float64, queue_size=10)
+        self.pubz = rospy.Publisher("raw_z", Float64, queue_size=10)
+
+        rampup_time = float(rospy.get_param('rampup_time'))
+        self.rampup_increment = self.drive / rampup_time
 
     def calculate_drive(self, distance, jump_angle):
         # TODO actually calculate the required drive
@@ -24,8 +30,11 @@ class Runway(Magic_State):
 
     def execute(self, userdata):
         rate = rospy.Rate(self.update_rate)
+        drive = self.rampup_increment
         while not rospy.is_shutdown() and not self.airborne:
-            self.publish_cmd(self.drive, self.yaw)
+            self.publish_cmd(drive, self.yaw)
+            if drive < self.drive:
+                drive += self.rampup_increment
             rate.sleep()
         return "airborne"
 
@@ -34,6 +43,10 @@ class Runway(Magic_State):
             self.accel_z = msg.linear_acceleration.z
         else:
             self.accel_z = (self.beta * self.accel_z) + (1-self.beta) * msg.linear_acceleration.z
+        f = Float64(); f.data = self.accel_z
+        self.pub.publish(f)
+        f2 = Float64(); f2.data = msg.linear_acceleration.z
+        self.pubz.publish(f2)
             
-        if abs(msg.linear_acceleration.z) < self.imu_thresh:
+        if abs(self.accel_z) < self.imu_thresh:
             self.airborne = True

@@ -6,17 +6,22 @@ from std_msgs.msg import Empty
 from std_msgs.msg import Int8MultiArray
 import rospy
 
+# Publishers
 DRIVE_PUB_INDEX = 0
 YAW_PUB_INDEX = 1
 
-KILL_INDEX_R1 = 5
+# ADCs
 DRIVE_INDEX = 1
-YAW_INDEX = 3
+YAW_INDEX = 2
 
-SKID_INDEX = 0    
-STRAIGHT_INDEX = 2
-
-REVIVE_INDEX = 1
+# Buttons
+ACTIVE_INDEX = 0
+SKID_INDEX = 1
+REVIVE_INDEX = 2
+STRAIGHT_INDEX = 3
+KILL_INDEX_R1 = 5
+UNARMED_INDEX = 6
+ARMED_INDEX = 7
 
 class DualShock():
 
@@ -27,9 +32,12 @@ class DualShock():
         self.skid_straight_pub = rospy.Publisher('/is_straight',Empty,queue_size=1)
         self.skid_skid_pub = rospy.Publisher('/is_skid',Empty, queue_size=1)
         self.revive_pub = rospy.Publisher('/revive_motors', Empty, queue_size=1)
+        self.brake_pub = rospy.Publisher('/brake_max', Empty, queue_size=1)
         self.setpoint_pub = rospy.Publisher('move_setpoints', Int8MultiArray, queue_size=5)
-        self.motor_control = True
-
+        self.motor_control = rospy.get_param("~motor_control", False)
+        self.armed = False
+        rospy.logwarn("Initializing unarmed")
+        
     def callback(self, msg):
         buttons = msg.buttons
         if buttons[KILL_INDEX_R1]:
@@ -41,12 +49,19 @@ class DualShock():
         elif buttons[STRAIGHT_INDEX]:
             rospy.logwarn("Straighting")
             self.skid_straight_pub.publish(Empty())
-
         elif buttons[REVIVE_INDEX]:
             rospy.logwarn("Reviving")
             self.revive_pub.publish(Empty())
-    
-        elif self.motor_control:
+        elif buttons[ACTIVE_INDEX]:
+            rospy.logwarn("Braking")
+            self.brake_pub.publish(Empty())
+        elif buttons[ARMED_INDEX]:
+            rospy.logwarn("Armed")
+            self.armed = True
+        elif buttons[UNARMED_INDEX]:
+            rospy.logwarn("Unarmed")
+            self.armed = False
+        elif self.armed:
             raw_drive = msg.axes[DRIVE_INDEX]
             drive = self.transform_drive(raw_drive)
             

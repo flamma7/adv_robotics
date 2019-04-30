@@ -13,20 +13,24 @@ class Airborne(Magic_State):
     def __init__(self, update_rate, jump_angle):
         super(Airborne, self).__init__(update_rate, self.outcomes)
         self.landing = False        
-        rospy.Subscriber('/imu/data/', Imu, self.imu_callback)
-        self.imu_thresh = float(rospy.get_param('imu_thresh'))        
+        rospy.Subscriber('/running_avg', Float64, self.avg_callback)
+        self.imu_thresh = float(rospy.get_param('imu_thresh'))
         # Initialize PID control
 
-    def imu_callback(self, msg):
-        quat = [msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w]
-        (roll, pitch, yaw) = tf.transformations.euler_from_quaternion(quat)
-        # publish state to the PID loop
-        if abs(msg.linear_acceleration.z) > self.imu_thresh:
+    def avg_callback(self, msg):
+        if abs(msg.data) > self.imu_thresh:
             self.landing = True
         
     def execute(self, userdata):
+        rospy.loginfo("airborne")
+        self.landing = False
         rate = rospy.Rate(self.update_rate)
+        back_rot = 40
+        self.publish_cmd(back_rot,0)
+#        self.publish_cmd(0,0)
         while not rospy.is_shutdown() and not self.landing:
-            self.publish_cmd(0,0)
+            self.publish_cmd(back_rot,0)
+#            self.publish_cmd(0,0)
+            rate.sleep()
         return "landing"
 
