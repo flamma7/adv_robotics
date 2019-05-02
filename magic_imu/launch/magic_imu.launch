@@ -1,5 +1,6 @@
 <launch>
 
+  <arg name="use_mag" default="false" />
   #### Nodelet manager ######################################################
 
   <node pkg="nodelet" type="nodelet" name="imu_manager" 
@@ -38,7 +39,7 @@
     args="load imu_filter_madgwick/ImuFilterNodelet imu_manager" 
     output="screen">
 
-    <param name="use_mag" value="true"/>
+    <param name="use_mag" value="$(arg use_mag)"/>
     <param name="use_magnetic_field_msg" value="true"/>
   </node>
 

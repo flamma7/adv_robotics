@@ -1,0 +1,13 @@
+<launch>
+
+<node ns="imu_pid" name="imu_yaw_controller" pkg="pid" type="controller" output="screen" >
+  <rosparam command="load" file="$(find magic_pid)/conf/imu_runway.yaml" />
+  <param name="node_name" value="imu_yaw_controller" />
+  <param name="upper_limit" value="100" />
+  <param name="lower_limit" value="-100" />
+  <param name="max_loop_frequency" value="50.0" />
+  <param name="min_loop_frequency" value="50.0" />
+ </node>
+ 
+
+</launch>

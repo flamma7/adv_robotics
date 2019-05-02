@@ -5,7 +5,7 @@ from std_msgs.msg import Float64
 import smach
 import sys
 
-from magic_states.runway import Runway
+from magic_states.runway2 import Runway
 from magic_states.airborne import Airborne
 from magic_states.landing import Landing
 
