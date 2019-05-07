@@ -8,7 +8,7 @@ rampup_time: 1.0
 airborne_drive: 0
 landing_drive: -100
 # For hardcoding purposes only
-drive: 40                 # Takeoff speed
+drive: 52                 # Takeoff speed
 
 sm:
   update_hz: 50
