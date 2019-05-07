@@ -8,9 +8,9 @@ folder = './data'
 data_loc = 'measurements.pkl'
 
 shape = [
-  (('ramp_dist', np.float64), { 'min': 5, 'max': 15, 'inc': 1 }),
-  (('drive', int), { 'min': 40, 'max': 100, 'inc': 3 }),
-  (('voltage', int), { 'min': 7.7, 'max': 8.5, 'inc': 0.01 }),
+  (('ramp_dist', np.float64), { 'min': 5, 'max': 16, 'inc': 1 }),
+  (('drive', int), { 'min': 40, 'max': 101, 'inc': 3 }),
+  (('voltage', int), { 'min': 7.7, 'max': 8.11, 'inc': 0.01 }),
 ]
 
 def save(location, data):
