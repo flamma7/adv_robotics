@@ -8,10 +8,13 @@ class StateMachine:
     def __init__(self):
         rospy.loginfo("State Machine Initializing")
         self.drivePub = rospy.Publisher("drive/control_effort", Float64, queue_size=10)
-        self.drive_effort = 10
-        self.timer = rospy.Timer(rospy.Duration(0.1), self.drive_callback)
+        self.drive_effort = 8
+        self.timer = rospy.Timer(rospy.Duration(0.1), self.setpoint_callback)
 
-    def drive_callback(self, msg):
+    def dist_callback(self, msg):
+        self.distance = msg.data
+
+    def setpoint_callback(self, msg):
         new_msg = Float64()
         new_msg.data = self.drive_effort
         self.drivePub.publish(new_msg)

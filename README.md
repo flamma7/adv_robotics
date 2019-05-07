@@ -16,3 +16,13 @@ Once paired:
 ```
 rosrun joy joy_node
 ```
+
+magic_sm sets drive to 10 continuously
+
+pid is the pid loop
+
+driver control (not needed when teleop)
+
+For teleop:
+pololu controller
+magic joy

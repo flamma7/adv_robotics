@@ -19,13 +19,14 @@ class DualShock():
         rospy.Subscriber('joy', Joy, self.callback)
         self.kill_pub = rospy.Publisher('kill_motors', Empty, queue_size=1)
         self.setpoint_pub = rospy.Publisher('move_setpoints', Int8MultiArray, queue_size=5)
+        self.motor_control = True
 
     def callback(self, msg):
         buttons = msg.buttons
         if buttons[KILL_INDEX_R1]:
             rospy.logwarn("Killed")
             self.kill_pub.publish(Empty())
-        else:
+        elif self.motor_control:
             raw_drive = msg.axes[DRIVE_INDEX]
             drive = self.transform_drive(raw_drive)
             
@@ -52,10 +53,11 @@ class DualShock():
         """
         Pololu driver expects drive in range 0-100
         """
-        if raw_drive < 0:
-            return 0
-        else:
-            return int(raw_drive * 100)
+        return int(raw_drive * 100)
+        # if raw_drive < 0:
+        #     return 0
+        # else:
+        #     return int(raw_drive * 100)
         
 
 def main():
