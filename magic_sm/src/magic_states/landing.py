@@ -16,9 +16,9 @@ class Landing(Magic_State):
     def execute(self, userdata):
         rospy.loginfo("landing")
         # self.publish_cmd(self.drive, 0)
-        self.publish_cmd(0, 0) # Stop immediately
+        self.publish_cmd(self.drive, 0) # Stop immediately
         rospy.sleep(self.landing_time)
-        self.publish_cmd(0,0) # Full stop
+        self.publish_cmd(-100, 0) # Full stop
         return "completed"
 
 

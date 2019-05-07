@@ -19,7 +19,7 @@ dist = float(rospy.get_param('dist'))
 update_rate = int(rospy.get_param('sm/update_hz'))
 jump_angle = float(rospy.get_param('jump_angle'))
 landing_time = float(rospy.get_param('landing_time'))
-landing_speed = int(rospy.get_param('landing_speed'))
+landing_speed = int(rospy.get_param('landing_drive'))
 
 # load rosparams
 with sm_top:

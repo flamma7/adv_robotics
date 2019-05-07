@@ -15,8 +15,8 @@ class Airborne(Magic_State):
         self.landing = False        
         rospy.Subscriber('/running_avg', Float64, self.avg_callback)
         self.imu_thresh = float(rospy.get_param('imu_thresh'))
-        # Initialize PID control
 
+        self.air_drive = int(rospy.get_param('airborne_drive'))
     def avg_callback(self, msg):
         if abs(msg.data) > self.imu_thresh:
             self.landing = True
@@ -25,7 +25,7 @@ class Airborne(Magic_State):
         rospy.loginfo("airborne")
         self.landing = False
         rate = rospy.Rate(self.update_rate)
-        back_rot = 70
+        back_rot = self.air_drive
         self.publish_cmd(back_rot,0)
 #        self.publish_cmd(0,0)
         while not rospy.is_shutdown() and not self.landing:

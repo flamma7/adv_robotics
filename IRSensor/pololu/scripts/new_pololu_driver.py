@@ -19,8 +19,8 @@ class PololuNode:
     numTerms2AverageOver = 20
 
     def __init__(self):
-
-        self.pololu = PololuController(self.drive_channel, self.yaw_channel, self.ir_channel_front, self.ir_channel_back)
+        pololu = '/dev/ttyACM' + str(rospy.get_param('~pol', '0'))
+        self.pololu = PololuController(self.drive_channel, self.yaw_channel, self.ir_channel_front, self.ir_channel_back, pololu)
         self.pololu.killMotors()
 
         self.ir_pub = rospy.Publisher('distance', Float64, queue_size=1)
@@ -30,6 +30,8 @@ class PololuNode:
         rospy.Subscriber('revive_motors', Empty, self.revive_callback)
         rospy.Subscriber('brake_max', Empty, self.brake_callback)
         self.raw_ir_pub = rospy.Publisher('raw_ir', Int16, queue_size=10)
+        self.front_unfiltered_ir_pub = rospy.Publisher('unfiltered_front_ir', Float64, queue_size=10)
+
 
         ir_read_freq = 1 / 50
         self.timer = rospy.Timer(rospy.Duration(ir_read_freq), self.ir_callback)
@@ -89,6 +91,9 @@ class PololuNode:
         b = -0.20900036625160207
         k = 0.43
         distance = (1/(m*V + b)) - k
+        msg = Float64()
+        msg.data = distance
+        self.front_unfiltered_ir_pub.publish(msg)
         #distance = V
         # rospy.loginfo(distance)
         newFrontAvg = self.frontWeightedAvg.getNewAvg(self.validate_distance(distance))

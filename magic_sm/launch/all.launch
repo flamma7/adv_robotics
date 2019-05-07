@@ -9,5 +9,6 @@
 </include> -->
 
 <include file="$(find magic_imu)/launch/magic_imu.launch" />
+<include file="$(find magic_pid)/launch/runway_pid.launch" />
 
 </launch>
