@@ -11,11 +11,11 @@ import geometry_msgs.msg as geo_msgs
 import std_msgs.msg as std_msgs
 
 def main():
-	robberEvasion(copName=copName.lower(), robberName=robName.lower())
+	mj = MagicJump()
 	rospy.spin()
 
-class robberEvasion():
-	def __init__(self, copName, robberName):
+class MagicJump():
+	def __init__(self):
 		# Setup node
 		rospy.init_node('magic_jump')
 
