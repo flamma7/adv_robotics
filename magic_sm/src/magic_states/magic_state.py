@@ -13,7 +13,7 @@ class Magic_State(smach.State):
         self.update_rate = update_rate
         self._corner = 0
         self._doorway = 0
-
+        self._front_wall = 0
         super(Magic_State, self).__init__(outcomes=outcomes)
 
     def doorway_callback(self, msg):
@@ -21,6 +21,9 @@ class Magic_State(smach.State):
 
     def corner_callback(self, msg):
         self._corner = msg.data
+    
+    def front_wall_callback(self, msg):
+        self._front_wall = msg.data
 
     def corner_check(self):
         return self._corner
