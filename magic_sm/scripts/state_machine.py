@@ -20,9 +20,12 @@ cdrive = int(rospy.get_param('~cdrive'))
 wall_setpoint = float(rospy.get_param('wall_setpoint'))
 # load rosparams
 with sm_top:
-    smach.StateMachine.add('straight', Straight(update_rate, hdrive, wall_setpoint), transitions={'completed':'sm_completed', 'doorway' :'doorway', 'corner':'corner'})
+    smach.StateMachine.add('straight', Straight(update_rate, hdrive, wall_setpoint), transitions={'completed':'sm_completed', 'doorway' :'doorway', 'corner':'pre_corner'})
     smach.StateMachine.add('doorway', Doorway(update_rate, hdrive), transitions={'end_doorway':'straight'})
-    smach.StateMachine.add('corner', Corner(update_rate, cdrive), transitions={'end_corner':'straight'})
+    smach.StateMachine.add('corner', Corner(update_rate, cdrive), transitions={'end_corner':'post_corner'})
+    smach.StateMachine.add('pre_corner', _, transitions={'end_pre_corner': 'corner', 'pre_corner': 'corner'})
+    smach.StateMachine.add('post_corner', _, transitions={'end_post_corner': 'straight'})
+    
     # smach.StateMachine.add('doorway', Doorway(update_rate, hdrive_set), transitions={'end_doorway':'sm_completed'})
 try:
     outcome = sm_top.execute()    
